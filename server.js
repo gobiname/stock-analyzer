@@ -38,10 +38,17 @@ function parseTableToJson(stdout) {
 
     if (values.length === headers.length) {
       const row = {};
+      let validValueCount = 0;
       headers.forEach((header, index) => {
-        row[header] = values[index] || '';
+        const val = values[index] || '';
+        row[header] = val;
+        // 统计有效值（不是 - 或空字符串）
+        if (val && val !== '-') validValueCount++;
       });
-      data.push(row); // 不过滤，返回所有数据
+      // 至少有一半字段有有效值才算有效数据
+      if (validValueCount >= headers.length / 2) {
+        data.push(row);
+      }
     }
   }
   return data;
@@ -63,7 +70,7 @@ function execPromise(command) {
 app.get('/api/search', async (req, res) => {
   try {
     const { keyword } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub search ${keyword}`);
+    const stdout = await execPromise(`npx westock-data-skillhub@latest search ${keyword}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -74,8 +81,8 @@ app.get('/api/search', async (req, res) => {
 // 获取K线数据
 app.get('/api/kline', async (req, res) => {
   try {
-    const { code, period = 'day', limit = 60, fq = 'qfq' } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub kline ${code} --period ${period} --limit ${limit} --fq ${fq}`);
+    const { code, period = 'day', limit = 60 } = req.query;
+    const stdout = await execPromise(`npx westock-data-skillhub@latest kline ${code} ${period} ${limit}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -87,7 +94,7 @@ app.get('/api/kline', async (req, res) => {
 app.get('/api/technical', async (req, res) => {
   try {
     const { code, group = 'macd,rsi,kd' } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub technical ${code} --group ${group}`);
+    const stdout = await execPromise(`npx westock-data-skillhub@latest technical ${code} ${group}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -99,7 +106,7 @@ app.get('/api/technical', async (req, res) => {
 app.get('/api/profile', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub profile ${code}`);
+    const stdout = await execPromise(`npx westock-data-skillhub@latest profile ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -111,14 +118,11 @@ app.get('/api/profile', async (req, res) => {
 app.get('/api/fund', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub asfund ${code}`);
-    console.log('=== FUND RAW OUTPUT ===');
-    console.log(stdout);
-    console.log('=======================');
+    const stdout = await execPromise(`npx westock-data-skillhub@latest asfund ${code}`);
     const data = parseTableToJson(stdout);
-    res.json({ success: true, data, raw: stdout });
+    res.json({ success: true, data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message, raw: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -126,7 +130,7 @@ app.get('/api/fund', async (req, res) => {
 app.get('/api/chip', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub chip ${code}`);
+    const stdout = await execPromise(`npx westock-data-skillhub@latest chip ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -138,11 +142,7 @@ app.get('/api/chip', async (req, res) => {
 app.get('/api/finance', async (req, res) => {
   try {
     const { code, num = 4 } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub finance ${code} --num ${num}`);
-    
-    console.log('=== FINANCE RAW OUTPUT ===');
-    console.log(stdout);
-    console.log('==========================');
+    const stdout = await execPromise(`npx westock-data-skillhub@latest finance ${code} ${num}`);
     
     // 解析三个表
     const sections = stdout.split(/\*{3,}/).filter(s => s.trim());
@@ -156,9 +156,9 @@ app.get('/api/finance', async (req, res) => {
       }
     });
     
-    res.json({ success: true, data: result, raw: stdout });
+    res.json({ success: true, data: result });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message, raw: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

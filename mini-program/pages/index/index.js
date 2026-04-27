@@ -261,16 +261,7 @@ Page({
         chipConclusion,
         financeData, grossMargin, cashFlow: cashFlowText, financeConclusion,
         score: score.toFixed(1), scoreDesc: score >= 7 ? '偏强势' : score >= 4 ? '中性偏弱' : '偏弱势',
-        scoreDetails, risks, opportunities,
-        // 原始数据（用于调试）
-        _raw: {
-          fundData,
-          fundRaw,
-          financeRaw,
-          financeDataRaw,
-          zcfz,
-          xjll
-        }
+        scoreDetails, risks, opportunities
       }
 
       this.setData({
