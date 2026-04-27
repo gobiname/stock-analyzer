@@ -23,14 +23,21 @@ function parseTableToJson(stdout) {
   const lines = stdout.trim().split('\n').filter(line => line.trim());
   if (lines.length < 2) return [];
 
-  const headers = lines[0].split('|')
+  // 找到表头行（包含 | 分隔符的行）
+  let headerIndex = 0;
+  while (headerIndex < lines.length && !lines[headerIndex].includes('|')) {
+    headerIndex++;
+  }
+  if (headerIndex >= lines.length) return [];
+
+  const headers = lines[headerIndex].split('|')
     .filter(h => h.trim())
     .map(h => h.trim());
 
   const data = [];
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = headerIndex + 1; i < lines.length; i++) {
     const line = lines[i];
-    if (line.startsWith('---')) continue;
+    if (line.startsWith('---') || !line.includes('|')) continue;
 
     const values = line.split('|')
       .filter(v => v.trim())
@@ -142,17 +149,20 @@ app.get('/api/chip', async (req, res) => {
 app.get('/api/finance', async (req, res) => {
   try {
     const { code, num = 4 } = req.query;
-    const stdout = await execPromise(`npx westock-data-skillhub@latest finance ${code} ${num}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-skillhub finance ${code} ${num}`);
     
-    // 解析三个表
+    // 解析三个表 (格式: **lrb** \n\n | 表头 | ...)
     const sections = stdout.split(/\*{3,}/).filter(s => s.trim());
     const result = {};
     
     sections.forEach(section => {
-      const lines = section.trim().split('\n');
-      const tableName = lines[0].toLowerCase().replace(/\s+/g, '');
-      if (['lrb', 'zcfz', 'xjll'].includes(tableName)) {
-        result[tableName] = parseTableToJson(section);
+      const lines = section.trim().split('\n').filter(l => l.trim());
+      // 第一行是表名如 "lrb"，去掉 ** 符号
+      const tableNameRaw = lines[0].toLowerCase().replace(/\*/g, '').trim();
+      if (['lrb', 'zcfz', 'xjll'].includes(tableNameRaw)) {
+        // 从section中移除表名行，保留表格数据
+        const tableContent = lines.slice(1).join('\n');
+        result[tableNameRaw] = parseTableToJson(tableContent);
       }
     });
     
