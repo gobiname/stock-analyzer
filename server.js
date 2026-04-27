@@ -125,10 +125,18 @@ app.get('/api/profile', async (req, res) => {
 app.get('/api/fund', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`npx westock-data-skillhub@latest asfund ${code}`);
+    console.log(`[Fund API] 请求代码: ${code}`);
+    
+    const stdout = await execPromise(`npx --yes westock-data-skillhub@latest asfund ${code}`);
+    console.log(`[Fund API] 原始数据长度: ${stdout.length}`);
+    console.log(`[Fund API] 原始数据前500字符:`, stdout.substring(0, 500));
+    
     const data = parseTableToJson(stdout);
+    console.log(`[Fund API] 解析后数据条数: ${data.length}`);
+    
     res.json({ success: true, data });
   } catch (error) {
+    console.error(`[Fund API] 错误:`, error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -137,7 +145,7 @@ app.get('/api/fund', async (req, res) => {
 app.get('/api/chip', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`npx westock-data-skillhub@latest chip ${code}`);
+    const stdout = await execPromise(`npx --yes westock-data-skillhub@latest chip ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -149,10 +157,15 @@ app.get('/api/chip', async (req, res) => {
 app.get('/api/finance', async (req, res) => {
   try {
     const { code, num = 4 } = req.query;
-    const stdout = await execPromise(`./node_modules/.bin/westock-data-skillhub finance ${code} ${num}`);
+    console.log(`[Finance API] 请求代码: ${code}, 期数: ${num}`);
+    
+    const stdout = await execPromise(`npx --yes westock-data-skillhub@latest finance ${code} ${num}`);
+    console.log(`[Finance API] 原始数据长度: ${stdout.length}`);
+    console.log(`[Finance API] 原始数据前500字符:`, stdout.substring(0, 500));
     
     // 解析三个表 (格式: **lrb** \n\n | 表头 | ...)
     const sections = stdout.split(/\*{3,}/).filter(s => s.trim());
+    console.log(`[Finance API] 分割后section数量: ${sections.length}`);
     const result = {};
     
     sections.forEach(section => {
