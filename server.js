@@ -42,11 +42,11 @@ function parseTableToJson(stdout) {
       headers.forEach((header, index) => {
         const val = values[index] || '';
         row[header] = val;
-        // 统计有效值（不是 - 或空字符串）
-        if (val && val !== '-') validValueCount++;
+        // 统计有效值（不是 --- 或空字符串）
+        if (val && val !== '---') validValueCount++;
       });
-      // 至少有一半字段有有效值才算有效数据
-      if (validValueCount >= headers.length / 2) {
+      // 至少有一个有效值才算有效数据
+      if (validValueCount > 0) {
         data.push(row);
       }
     }
