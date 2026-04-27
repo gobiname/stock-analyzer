@@ -21,14 +21,14 @@ app.use(express.json());
 // 解析命令行输出的表格数据
 function parseTableToJson(stdout) {
   const lines = stdout.trim().split('\n').filter(line => line.trim());
-  if (lines.length < 3) return []; // 需要表头、分隔线、至少一行数据
+  if (lines.length < 2) return [];
 
   const headers = lines[0].split('|')
     .filter(h => h.trim())
     .map(h => h.trim());
 
   const data = [];
-  for (let i = 2; i < lines.length; i++) { // 从第3行开始（跳过表头和分隔线）
+  for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
     if (line.startsWith('---')) continue;
 
@@ -41,11 +41,7 @@ function parseTableToJson(stdout) {
       headers.forEach((header, index) => {
         row[header] = values[index] || '';
       });
-      // 过滤掉全是空值或"-"的行
-      const hasValidData = Object.values(row).some(v => v && v !== '-');
-      if (hasValidData) {
-        data.push(row);
-      }
+      data.push(row); // 不过滤，返回所有数据
     }
   }
   return data;
@@ -116,10 +112,13 @@ app.get('/api/fund', async (req, res) => {
   try {
     const { code } = req.query;
     const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub asfund ${code}`);
+    console.log('=== FUND RAW OUTPUT ===');
+    console.log(stdout);
+    console.log('=======================');
     const data = parseTableToJson(stdout);
-    res.json({ success: true, data });
+    res.json({ success: true, data, raw: stdout });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error.message, raw: error.message });
   }
 });
 
@@ -141,6 +140,10 @@ app.get('/api/finance', async (req, res) => {
     const { code, num = 4 } = req.query;
     const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub finance ${code} --num ${num}`);
     
+    console.log('=== FINANCE RAW OUTPUT ===');
+    console.log(stdout);
+    console.log('==========================');
+    
     // 解析三个表
     const sections = stdout.split(/\*{3,}/).filter(s => s.trim());
     const result = {};
@@ -153,9 +156,9 @@ app.get('/api/finance', async (req, res) => {
       }
     });
     
-    res.json({ success: true, data: result });
+    res.json({ success: true, data: result, raw: stdout });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error.message, raw: error.message });
   }
 });
 

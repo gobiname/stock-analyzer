@@ -111,8 +111,16 @@ Page({
       const listedDate = profile.listedDate ? profile.listedDate.split(' ')[0] : '-'
       const totalShares = profile.regCapital ? (this.parseNum(profile.regCapital) / 10000).toFixed(2) + '万股' : '-'
 
+      // 保存完整的财务数据
       const finance = financeRes.success && financeRes.data || {}
+      const financeRaw = financeRes.success && financeRes.raw ? financeRes.raw : ''
       const lrb = finance.lrb || []
+      const zcfz = finance.zcfz || []
+      const xjll = finance.xjll || []
+      
+      // 原始财务数据（不过滤）
+      const financeDataRaw = lrb
+      
       const financeData = []
       const quarterNames = ['Q1', 'Q2', 'Q3', 'Q4']
       lrb.slice(-4).forEach((item, idx) => {
@@ -253,7 +261,16 @@ Page({
         chipConclusion,
         financeData, grossMargin, cashFlow: cashFlowText, financeConclusion,
         score: score.toFixed(1), scoreDesc: score >= 7 ? '偏强势' : score >= 4 ? '中性偏弱' : '偏弱势',
-        scoreDetails, risks, opportunities
+        scoreDetails, risks, opportunities,
+        // 原始数据（用于调试）
+        _raw: {
+          fundData,
+          fundRaw,
+          financeRaw,
+          financeDataRaw,
+          zcfz,
+          xjll
+        }
       }
 
       this.setData({
