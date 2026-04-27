@@ -21,14 +21,14 @@ app.use(express.json());
 // 解析命令行输出的表格数据
 function parseTableToJson(stdout) {
   const lines = stdout.trim().split('\n').filter(line => line.trim());
-  if (lines.length < 2) return [];
+  if (lines.length < 3) return []; // 需要表头、分隔线、至少一行数据
 
   const headers = lines[0].split('|')
     .filter(h => h.trim())
     .map(h => h.trim());
 
   const data = [];
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = 2; i < lines.length; i++) { // 从第3行开始（跳过表头和分隔线）
     const line = lines[i];
     if (line.startsWith('---')) continue;
 
@@ -41,7 +41,11 @@ function parseTableToJson(stdout) {
       headers.forEach((header, index) => {
         row[header] = values[index] || '';
       });
-      data.push(row);
+      // 过滤掉全是空值或"-"的行
+      const hasValidData = Object.values(row).some(v => v && v !== '-');
+      if (hasValidData) {
+        data.push(row);
+      }
     }
   }
   return data;
