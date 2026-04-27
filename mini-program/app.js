@@ -1,5 +1,5 @@
 App({
   globalData: {
-    apiBase: 'http://localhost:3001/api'
+    apiBase: 'https://stock-analyzer-production-58dc.up.railway.app/api'
   }
 })

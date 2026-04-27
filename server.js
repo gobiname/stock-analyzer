@@ -63,7 +63,7 @@ function execPromise(command) {
 app.get('/api/search', async (req, res) => {
   try {
     const { keyword } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 search ${keyword}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub search ${keyword}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -75,7 +75,7 @@ app.get('/api/search', async (req, res) => {
 app.get('/api/kline', async (req, res) => {
   try {
     const { code, period = 'day', limit = 60, fq = 'qfq' } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 kline ${code} --period ${period} --limit ${limit} --fq ${fq}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub kline ${code} --period ${period} --limit ${limit} --fq ${fq}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -87,7 +87,7 @@ app.get('/api/kline', async (req, res) => {
 app.get('/api/technical', async (req, res) => {
   try {
     const { code, group = 'macd,rsi,kd' } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 technical ${code} --group ${group}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub technical ${code} --group ${group}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -99,7 +99,7 @@ app.get('/api/technical', async (req, res) => {
 app.get('/api/profile', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 profile ${code}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub profile ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -111,7 +111,7 @@ app.get('/api/profile', async (req, res) => {
 app.get('/api/fund', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 asfund ${code}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub asfund ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -123,7 +123,7 @@ app.get('/api/fund', async (req, res) => {
 app.get('/api/chip', async (req, res) => {
   try {
     const { code } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 chip ${code}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub chip ${code}`);
     const data = parseTableToJson(stdout);
     res.json({ success: true, data });
   } catch (error) {
@@ -135,7 +135,7 @@ app.get('/api/chip', async (req, res) => {
 app.get('/api/finance', async (req, res) => {
   try {
     const { code, num = 4 } = req.query;
-    const stdout = await execPromise(`npx -y westock-data-clawhub@1.0.4 finance ${code} --num ${num}`);
+    const stdout = await execPromise(`./node_modules/.bin/westock-data-clawhub finance ${code} --num ${num}`);
     
     // 解析三个表
     const sections = stdout.split(/\*{3,}/).filter(s => s.trim());
