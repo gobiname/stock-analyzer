@@ -1,0 +1,599 @@
+.container {
+  padding: 24rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 搜索区域 */
+.search-box {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 88rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.search-btn {
+  width: 160rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.search-btn::after { border: none; }
+
+/* 加载 */
+.loading {
+  text-align: center;
+  padding: 100rpx 40rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.loading-tip {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 200rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 结果 */
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* 股票头部 */
+.stock-header-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.15);
+}
+
+.stock-title {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.stock-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.stock-code {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.6);
+}
+
+.stock-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20rpx;
+}
+
+.current-price {
+  font-size: 52rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.price-change {
+  font-size: 28rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.price-change.up {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.price-change.down {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+/* 通用卡片 */
+.section {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 16rpx;
+  border-left: 6rpx solid #667eea;
+}
+
+/* 评分 */
+.score-section {
+  text-align: center;
+  padding: 40rpx 28rpx;
+}
+
+.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-circle {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.score-circle.good { background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%); }
+.score-circle.neutral { background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%); }
+.score-circle.bad { background: linear-gradient(135deg, #f44336 0%, #e91e63 100%); }
+
+.score-num {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.score-unit {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.8);
+}
+
+.score-level {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 信息表格 */
+.info-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: flex;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-label {
+  width: 160rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 价格统计 */
+.price-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-value.down { color: #f44336; }
+.stat-value.up { color: #4caf50; }
+
+.trend-desc {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.desc-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.desc-content {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 技术指标表格 */
+.tech-table {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.tech-header, .tech-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 2fr;
+  padding: 16rpx 20rpx;
+  text-align: center;
+}
+
+.tech-header {
+  background: #e8e8e8;
+  font-weight: bold;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.tech-row {
+  border-bottom: 1rpx solid #eee;
+  font-size: 26rpx;
+}
+
+.tech-row:last-child { border-bottom: none; }
+.tech-name { color: #333; }
+.tech-value { font-weight: bold; color: #333; }
+
+.tech-signal {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  display: inline-block;
+}
+
+.tech-signal.warning { background: #e3f2fd; color: #1976d2; }
+.tech-signal.danger { background: #ffebee; color: #d32f2f; }
+.tech-signal.normal { background: #f5f5f5; color: #666; }
+.tech-signal.up { background: #e8f5e9; color: #388e3c; }
+.tech-signal.down { background: #ffebee; color: #d32f2f; }
+
+/* 资金表格 */
+.fund-table {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.fund-header, .fund-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  padding: 16rpx 20rpx;
+  text-align: center;
+}
+
+.fund-header {
+  background: #e8e8e8;
+  font-weight: bold;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.fund-row {
+  border-bottom: 1rpx solid #eee;
+  font-size: 26rpx;
+}
+
+.fund-row:last-child { border-bottom: none; }
+
+.fund-value.up { color: #4caf50; font-weight: bold; }
+.fund-value.down { color: #f44336; font-weight: bold; }
+
+.fund-status {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  display: inline-block;
+}
+
+.fund-status.good { background: #e8f5e9; color: #388e3c; }
+.fund-status.bad { background: #ffebee; color: #d32f2f; }
+
+/* 筹码表格 */
+.chip-table {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.chip-row {
+  display: flex;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #eee;
+  align-items: center;
+}
+
+.chip-row:last-child { border-bottom: none; }
+
+.chip-label {
+  width: 200rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.chip-value {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.chip-value.primary { color: #667eea; }
+
+.chip-desc {
+  width: 200rpx;
+  font-size: 22rpx;
+  color: #999;
+  text-align: right;
+}
+
+/* 结论框 */
+.conclusion-box {
+  background: #f0f7ff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.conclusion-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 12rpx;
+}
+
+.conclusion-content {
+  font-size: 24rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.conclusion-item {
+  font-size: 24rpx;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+}
+
+/* 财务表格 */
+.finance-table {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.finance-header, .finance-row {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 2fr;
+  padding: 16rpx 20rpx;
+  text-align: center;
+}
+
+.finance-header {
+  background: #e8e8e8;
+  font-weight: bold;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.finance-row {
+  border-bottom: 1rpx solid #eee;
+  font-size: 26rpx;
+}
+
+.finance-row:last-child { border-bottom: none; }
+
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.summary-item {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.summary-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.summary-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 评分详情 */
+.score-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.score-item {
+  display: grid;
+  grid-template-columns: 100rpx 1fr 80rpx;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.score-d-name {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.score-bar {
+  height: 16rpx;
+  background: #eee;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 8rpx;
+  transition: width 0.3s;
+}
+
+.score-fill.good { background: linear-gradient(90deg, #4caf50, #8bc34a); }
+.score-fill.neutral { background: linear-gradient(90deg, #ff9800, #ffc107); }
+.score-fill.bad { background: linear-gradient(90deg, #f44336, #e91e63); }
+
+.score-d-value {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.score-d-desc {
+  grid-column: 1 / -1;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: -8rpx;
+}
+
+/* 风险提示 */
+.risk-section {
+  background: #fff8e1;
+  border: 2rpx solid #ffe082;
+}
+
+.risk-list {
+  margin-bottom: 20rpx;
+}
+
+.risk-item {
+  display: flex;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  color: #d48806;
+  line-height: 1.5;
+}
+
+.risk-dot {
+  margin-right: 8rpx;
+  color: #f57c00;
+}
+
+.risk-text {
+  flex: 1;
+}
+
+/* 机会提示 */
+.opportunity-box {
+  background: #e8f5e9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.opportunity-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #388e3c;
+  margin-bottom: 12rpx;
+}
+
+.opportunity-item {
+  font-size: 24rpx;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 8rpx;
+}
+
+/* 免责声明 */
+.disclaimer {
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 40rpx;
+}
+
+.actions button {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #667eea;
+  border: 2rpx solid #667eea;
+}
+
+.actions button::after { border: none; }

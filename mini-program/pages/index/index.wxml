@@ -1,0 +1,276 @@
+<view class="container">
+  <!-- 搜索区域 -->
+  <view class="search-box">
+    <input class="search-input" placeholder="输入股票代码" value="{{stockCode}}" bindinput="onInput" bindconfirm="analyze" />
+    <button class="search-btn" bindtap="analyze" loading="{{loading}}">分析</button>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text class="loading-text">正在分析，请稍候...</text>
+    <text class="loading-tip">首次加载可能需要10-20秒</text>
+  </view>
+
+  <!-- 分析结果 -->
+  <view wx:if="{{analysis && !loading}}" class="result">
+    
+    <!-- 股票头部信息 -->
+    <view class="stock-header-card">
+      <view class="stock-title">
+        <text class="stock-name">{{stockInfo.name}}</text>
+        <text class="stock-code">{{stockInfo.code}}</text>
+      </view>
+      <view class="stock-price-row">
+        <text class="current-price">{{stockInfo.price}}元</text>
+        <text class="price-change {{stockInfo.change >= 0 ? 'up' : 'down'}}">
+          {{stockInfo.change >= 0 ? '+' : ''}}{{stockInfo.change}}%
+        </text>
+      </view>
+    </view>
+
+    <!-- 综合评分 -->
+    <view class="section score-section">
+      <view class="section-title">综合量化评分</view>
+      <view class="score-box">
+        <view class="score-circle {{analysis.score >= 7 ? 'good' : analysis.score >= 4 ? 'neutral' : 'bad'}}">
+          <text class="score-num">{{analysis.score}}</text>
+          <text class="score-unit">分</text>
+        </view>
+        <view class="score-level">{{analysis.scoreDesc}}</view>
+      </view>
+    </view>
+
+    <!-- 一、公司概况 -->
+    <view class="section">
+      <view class="section-title">📋 公司概况</view>
+      <view class="info-table">
+        <view class="info-row">
+          <text class="info-label">股票名称</text>
+          <text class="info-value">{{analysis.companyName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">所属行业</text>
+          <text class="info-value">{{analysis.industry}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">主营业务</text>
+          <text class="info-value">{{analysis.business}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">上市日期</text>
+          <text class="info-value">{{analysis.listedDate}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">总股本</text>
+          <text class="info-value">{{analysis.totalShares}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 二、近期价格走势 -->
+    <view class="section">
+      <view class="section-title">📈 近期价格走势 (60日)</view>
+      <view class="price-stats">
+        <view class="stat-item">
+          <text class="stat-label">最新价</text>
+          <text class="stat-value">{{stockInfo.price}}元</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">60日最高</text>
+          <text class="stat-value">{{analysis.high60d}}元</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">60日最低</text>
+          <text class="stat-value">{{analysis.low60d}}元</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">距高点跌幅</text>
+          <text class="stat-value {{analysis.dropRate > 0 ? 'down' : 'up'}}">{{analysis.dropRate}}%</text>
+        </view>
+      </view>
+      <view class="trend-desc">
+        <text class="desc-title">走势特征：</text>
+        <text class="desc-content">{{analysis.trendDesc}}</text>
+      </view>
+    </view>
+
+    <!-- 三、技术面分析 -->
+    <view class="section">
+      <view class="section-title">📊 技术面分析</view>
+      <view class="tech-table">
+        <view class="tech-header">
+          <text class="tech-h-name">指标</text>
+          <text class="tech-h-value">数值</text>
+          <text class="tech-h-signal">信号</text>
+        </view>
+        <view class="tech-row">
+          <text class="tech-name">RSI(6)</text>
+          <text class="tech-value">{{analysis.rsi6}}</text>
+          <text class="tech-signal {{analysis.rsi6 < 30 ? 'warning' : analysis.rsi6 > 70 ? 'danger' : 'normal'}}">{{analysis.rsi6Signal}}</text>
+        </view>
+        <view class="tech-row">
+          <text class="tech-name">RSI(12)</text>
+          <text class="tech-value">{{analysis.rsi12}}</text>
+          <text class="tech-signal {{analysis.rsi12 < 30 ? 'warning' : analysis.rsi12 > 70 ? 'danger' : 'normal'}}">{{analysis.rsi12Signal}}</text>
+        </view>
+        <view class="tech-row">
+          <text class="tech-name">MACD</text>
+          <text class="tech-value">{{analysis.macd}}</text>
+          <text class="tech-signal {{analysis.macd >= 0 ? 'up' : 'down'}}">{{analysis.macdSignal}}</text>
+        </view>
+      </view>
+      <view class="conclusion-box">
+        <text class="conclusion-title">技术面结论：</text>
+        <view wx:for="{{analysis.techConclusions}}" wx:key="index" class="conclusion-item">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 四、资金流向 -->
+    <view class="section">
+      <view class="section-title">💰 资金流向</view>
+      <view class="fund-table">
+        <view class="fund-header">
+          <text class="fund-h-name">指标</text>
+          <text class="fund-h-value">数值</text>
+          <text class="fund-h-status">状态</text>
+        </view>
+        <view class="fund-row">
+          <text class="fund-name">主力净流入</text>
+          <text class="fund-value {{analysis.mainNetFlow >= 0 ? 'up' : 'down'}}">{{analysis.mainNetFlowText}}</text>
+          <text class="fund-status {{analysis.mainNetFlow >= 0 ? 'good' : 'bad'}}">{{analysis.mainNetFlow >= 0 ? '流入' : '流出'}}</text>
+        </view>
+        <view class="fund-row">
+          <text class="fund-name">5日主力</text>
+          <text class="fund-value {{analysis.mainNetFlow5d >= 0 ? 'up' : 'down'}}">{{analysis.mainNetFlow5dText}}</text>
+          <text class="fund-status {{analysis.mainNetFlow5d >= 0 ? 'good' : 'bad'}}">{{analysis.mainNetFlow5d >= 0 ? '流入' : '流出'}}</text>
+        </view>
+        <view class="fund-row">
+          <text class="fund-name">10日主力</text>
+          <text class="fund-value {{analysis.mainNetFlow10d >= 0 ? 'up' : 'down'}}">{{analysis.mainNetFlow10dText}}</text>
+          <text class="fund-status {{analysis.mainNetFlow10d >= 0 ? 'good' : 'bad'}}">{{analysis.mainNetFlow10d >= 0 ? '流入' : '流出'}}</text>
+        </view>
+        <view class="fund-row">
+          <text class="fund-name">20日主力</text>
+          <text class="fund-value {{analysis.mainNetFlow20d >= 0 ? 'up' : 'down'}}">{{analysis.mainNetFlow20dText}}</text>
+          <text class="fund-status {{analysis.mainNetFlow20d >= 0 ? 'good' : 'bad'}}">{{analysis.mainNetFlow20d >= 0 ? '流入' : '流出'}}</text>
+        </view>
+      </view>
+      <view class="conclusion-box">
+        <text class="conclusion-title">资金面结论：</text>
+        <text class="conclusion-content">{{analysis.fundConclusion}}</text>
+      </view>
+    </view>
+
+    <!-- 五、筹码分布 -->
+    <view class="section">
+      <view class="section-title">🎯 筹码分布</view>
+      <view class="chip-table">
+        <view class="chip-row">
+          <text class="chip-label">平均成本</text>
+          <text class="chip-value primary">{{analysis.avgCost}}元</text>
+          <text class="chip-desc">持仓平均成本</text>
+        </view>
+        <view class="chip-row">
+          <text class="chip-label">当前价格</text>
+          <text class="chip-value">{{analysis.currentPrice}}元</text>
+          <text class="chip-desc">{{analysis.costDiff > 0 ? '高于' : '低于'}}成本 {{Math.abs(analysis.costDiff)}}%</text>
+        </view>
+        <view class="chip-row">
+          <text class="chip-label">获利比例</text>
+          <text class="chip-value">{{analysis.profitRate}}%</text>
+          <text class="chip-desc">{{analysis.profitRate < 10 ? '大部分筹码亏损' : analysis.profitRate > 50 ? '大部分筹码盈利' : '盈亏平衡'}}</text>
+        </view>
+        <view class="chip-row">
+          <text class="chip-label">90%筹码集中度</text>
+          <text class="chip-value">{{analysis.chipConcentration90}}%</text>
+          <text class="chip-desc">{{analysis.chipConcentration90 < 10 ? '筹码集中' : '筹码分散'}}</text>
+        </view>
+      </view>
+      <view class="conclusion-box">
+        <text class="conclusion-title">筹码面结论：</text>
+        <text class="conclusion-content">{{analysis.chipConclusion}}</text>
+      </view>
+    </view>
+
+    <!-- 六、财务数据 -->
+    <view class="section">
+      <view class="section-title">📊 财务数据 (2025前三季度)</view>
+      <view class="finance-table">
+        <view class="finance-header">
+          <text class="finance-h-period">报告期</text>
+          <text class="finance-h-revenue">营收</text>
+          <text class="finance-h-profit">净利润</text>
+        </view>
+        <view wx:for="{{analysis.financeData}}" wx:key="index" class="finance-row">
+          <text class="finance-period">{{item.period}}</text>
+          <text class="finance-revenue">{{item.revenue}}</text>
+          <text class="finance-profit">{{item.profit}}</text>
+        </view>
+      </view>
+      <view class="finance-summary">
+        <view class="summary-item">
+          <text class="summary-label">毛利率</text>
+          <text class="summary-value">{{analysis.grossMargin}}</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">经营现金流</text>
+          <text class="summary-value">{{analysis.cashFlow}}</text>
+        </view>
+      </view>
+      <view class="conclusion-box">
+        <text class="conclusion-title">财务面结论：</text>
+        <text class="conclusion-content">{{analysis.financeConclusion}}</text>
+      </view>
+    </view>
+
+    <!-- 七、综合量化评分详情 -->
+    <view class="section">
+      <view class="section-title">⭐ 综合量化评分详情</view>
+      <view class="score-detail">
+        <view wx:for="{{analysis.scoreDetails}}" wx:key="index" class="score-item">
+          <text class="score-d-name">{{item.name}}</text>
+          <view class="score-bar">
+            <view class="score-fill {{item.score >= 7 ? 'good' : item.score >= 4 ? 'neutral' : 'bad'}}" style="width: {{item.score * 10}}%"></view>
+          </view>
+          <text class="score-d-value">{{item.score}}分</text>
+          <text class="score-d-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 八、风险提示 -->
+    <view class="section risk-section">
+      <view class="section-title">⚠️ 风险提示</view>
+      <view class="risk-list">
+        <view wx:for="{{analysis.risks}}" wx:key="index" class="risk-item">
+          <text class="risk-dot">•</text>
+          <text class="risk-text">{{item}}</text>
+        </view>
+      </view>
+      <view wx:if="{{analysis.opportunities.length > 0}}" class="opportunity-box">
+        <view class="opportunity-title">💡 机会提示</view>
+        <view wx:for="{{analysis.opportunities}}" wx:key="index" class="opportunity-item">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 免责声明 -->
+    <view class="disclaimer">
+      <text>免责声明：本分析仅供参考，不构成投资建议。投资有风险，决策需谨慎。</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="actions">
+      <button class="btn-secondary" bindtap="saveToHistory">保存记录</button>
+      <button class="btn-primary" open-type="share">分享报告</button>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!stockInfo && !loading}}" class="empty">
+    <text>输入股票代码开始分析</text>
+  </view>
+</view>

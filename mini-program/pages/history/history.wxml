@@ -1,0 +1,18 @@
+<view class="container">
+  <view class="history-list" wx:if="{{history.length > 0}}">
+    <view class="history-item" wx:for="{{history}}" wx:key="index" bindtap="viewDetail" data-item="{{item}}">
+      <view class="item-header">
+        <text class="stock-name">{{item.name}}</text>
+        <text class="stock-code">{{item.code}}</text>
+        <text class="score-badge">{{item.score}}分</text>
+      </view>
+      <view class="item-body">
+        <text class="price">{{item.price}}元</text>
+        <text class="time">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="empty">
+    <text>暂无历史记录</text>
+  </view>
+</view>
