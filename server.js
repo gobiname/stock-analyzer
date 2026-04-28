@@ -159,7 +159,7 @@ app.get('/api/finance', async (req, res) => {
     const { code, num = 4 } = req.query;
     console.log(`[Finance API] 请求代码: ${code}, 期数: ${num}`);
     
-    const stdout = await execPromise(`npx --yes westock-data-skillhub@latest finance ${code} ${num}`);
+    const stdout = await execPromise(`npx --yes westock-data-skillhub@latest finance ${code} --num ${num}`);
     console.log(`[Finance API] 原始数据长度: ${stdout.length}`);
     console.log(`[Finance API] 原始数据前500字符:`, stdout.substring(0, 500));
     
