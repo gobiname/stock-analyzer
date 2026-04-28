@@ -255,6 +255,7 @@ Page({
         mainNetFlow5d, mainNetFlow5dText: this.formatMoney(mainNetFlow5d),
         mainNetFlow10d, mainNetFlow10dText: this.formatMoney(mainNetFlow10d),
         mainNetFlow20d, mainNetFlow20dText: this.formatMoney(mainNetFlow20d),
+        retailNetFlow, retailNetFlowText: this.formatMoney(retailNetFlow),
         fundConclusion,
         avgCost: avgCost.toFixed(2), currentPrice: latestPrice.toFixed(2), costDiff,
         profitRate: profitRate.toFixed(1), chipConcentration90: chipConcentration90.toFixed(1),

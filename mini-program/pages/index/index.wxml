@@ -156,6 +156,11 @@
           <text class="fund-value {{analysis.mainNetFlow20d >= 0 ? 'up' : 'down'}}">{{analysis.mainNetFlow20dText}}</text>
           <text class="fund-status {{analysis.mainNetFlow20d >= 0 ? 'good' : 'bad'}}">{{analysis.mainNetFlow20d >= 0 ? '流入' : '流出'}}</text>
         </view>
+        <view class="fund-row">
+          <text class="fund-name">散户净流入</text>
+          <text class="fund-value {{analysis.retailNetFlow >= 0 ? 'up' : 'down'}}">{{analysis.retailNetFlowText}}</text>
+          <text class="fund-status {{analysis.retailNetFlow >= 0 ? 'good' : 'bad'}}">{{analysis.retailNetFlow >= 0 ? '流入' : '流出'}}</text>
+        </view>
       </view>
       <view class="conclusion-box">
         <text class="conclusion-title">资金面结论：</text>
