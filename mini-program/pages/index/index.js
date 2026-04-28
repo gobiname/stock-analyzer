@@ -122,12 +122,22 @@ Page({
       const financeDataRaw = lrb
       
       const financeData = []
-      const quarterNames = ['Q1', 'Q2', 'Q3', 'Q4']
-      lrb.slice(-4).forEach((item, idx) => {
+      // 取最新4期数据，按时间从新到旧排序
+      const latest4 = lrb.slice(-4).reverse()
+      latest4.forEach((item, idx) => {
         const revenue = this.parseNum(item.OperatingRevenue, 0)
         const profit = this.parseNum(item.NPParentCompanyOwners, 0)
-        financeData.unshift({
-          period: quarterNames[idx] || item.EndDate?.slice(5) || '-',
+        // 根据日期判断季度
+        const endDate = item.EndDate || ''
+        const month = parseInt(endDate.slice(5, 7)) || 0
+        let quarter = '-'
+        if (month === 3) quarter = 'Q1'
+        else if (month === 6) quarter = 'Q2'
+        else if (month === 9) quarter = 'Q3'
+        else if (month === 12) quarter = 'Q4'
+        
+        financeData.push({
+          period: quarter,
           revenue: revenue > 0 ? (revenue / 10000).toFixed(0) + '万' : '-',
           profit: profit > 0 ? (profit / 10000).toFixed(0) + '万' : '-'
         })
@@ -172,10 +182,11 @@ Page({
       const totalProfit = financeData.reduce((sum, item) => sum + this.parseNum(item.profit, 0), 0)
       let financeConclusion = ''
       if (financeData.length >= 2) {
-        const lastProfit = this.parseNum(financeData[financeData.length - 1].profit, 0)
-        const prevProfit = this.parseNum(financeData[0].profit, 0)
-        if (prevProfit > 0 && lastProfit > prevProfit) financeConclusion = `前三季度净利润持续增长，累计约${this.formatMoney(totalProfit)}，经营状况良好。`
-        else if (prevProfit > 0 && lastProfit < prevProfit * 0.5) financeConclusion = `近期净利润有所下滑，需关注业绩变化。`
+        // financeData 已按时间从新到旧排序，最新数据在索引0
+        const latestProfit = this.parseNum(financeData[0].profit, 0)
+        const oldestProfit = this.parseNum(financeData[financeData.length - 1].profit, 0)
+        if (oldestProfit > 0 && latestProfit > oldestProfit) financeConclusion = `前三季度净利润持续增长，累计约${this.formatMoney(totalProfit)}，经营状况良好。`
+        else if (oldestProfit > 0 && latestProfit < oldestProfit * 0.5) financeConclusion = `近期净利润有所下滑，需关注业绩变化。`
         else financeConclusion = `前三季度净利润累计约${this.formatMoney(totalProfit)}，经营相对稳定。`
       } else financeConclusion = '财务数据暂无详细信息。'
       if (cashFlow > 0) financeConclusion += '经营现金流为正，财务状况健康。'
