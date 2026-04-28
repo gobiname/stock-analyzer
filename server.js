@@ -40,14 +40,19 @@ function parseTableToJson(stdout) {
     if (line.startsWith('---') || !line.includes('|')) continue;
 
     const values = line.split('|')
-      .filter(v => v.trim())
       .map(v => v.trim());
 
-    if (values.length === headers.length) {
+    // 过滤掉完全为空的分隔，但保留空字符串字段
+    const filteredValues = values.filter((v, i) => {
+      // 保留非空值，或者中间的空值（空字段）
+      return v !== '' || (i > 0 && i < values.length - 1);
+    });
+
+    if (filteredValues.length === headers.length) {
       const row = {};
       let validValueCount = 0;
       headers.forEach((header, index) => {
-        const val = values[index] || '';
+        const val = filteredValues[index] || '';
         row[header] = val;
         // 统计有效值（不是 --- 或空字符串）
         if (val && val !== '---') validValueCount++;
